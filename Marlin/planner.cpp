@@ -607,7 +607,7 @@ block->steps_y = labs((target[X_AXIS]-position[X_AXIS]) - (target[Y_AXIS]-positi
 //   SERIAL_PROTOCOLLN(block->steps_e);
   block->steps_e *= extruder_multiply[extruder];
   block->steps_e = round(block->steps_e/100.0);
-  SERIAL_PROTOCOLLN(block->steps_e);
+  //SERIAL_PROTOCOLLN(block->steps_e);
   block->step_event_count = max(block->steps_x, max(block->steps_y, max(block->steps_z, block->steps_e)));
 
   // Bail if this is a zero-length block

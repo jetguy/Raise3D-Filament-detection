@@ -3562,6 +3562,18 @@ inline void gcode_M119() {
     SERIAL_PROTOCOLPGM(MSG_Z_MAX);
     SERIAL_PROTOCOLLN(((READ(Z_MAX_PIN)^Z_MAX_ENDSTOP_INVERTING)?MSG_ENDSTOP_HIT:MSG_ENDSTOP_OPEN));
   #endif
+
+  //Lack of material testing
+   #if defined(E0_MATERIAL_LACK_PIN) && E0_MATERIAL_LACK_PIN > -1
+    SERIAL_PROTOCOLPGM("e0_lack: ");
+    SERIAL_PROTOCOLLN(((READ(E0_MATERIAL_LACK_PIN)^E0_LACK_ENDSTOP_INVERTING)?MSG_ENDSTOP_HIT:MSG_ENDSTOP_OPEN));
+  #endif
+  #if defined(DUAL)
+   #if defined(E1_MATERIAL_LACK_PIN) && E1_MATERIAL_LACK_PIN > -1
+    SERIAL_PROTOCOLPGM("e1_lack: ");
+    SERIAL_PROTOCOLLN(((READ(E1_MATERIAL_LACK_PIN)^E1_LACK_ENDSTOP_INVERTING)?MSG_ENDSTOP_HIT:MSG_ENDSTOP_OPEN));
+  #endif
+  #endif
 }
 
 /**
@@ -3852,12 +3864,12 @@ inline void gcode_M221() {
 		if (code_seen('S')) {
 			int sval = code_value();
       extruder_multiply[tmp_extruder] = sval;
-	  SERIAL_PROTOCOLLN(sval);
-	  if (tmp_extruder == 0) {SERIAL_PROTOCOLLN(0);}
-	  else{
-		  SERIAL_PROTOCOLLN(1);}
-	  SERIAL_PROTOCOLLN(extruder_multiply[0]);
-	  SERIAL_PROTOCOLLN(extruder_multiply[1]);
+//	  SERIAL_PROTOCOLLN(sval);
+//	  if (tmp_extruder == 0) {SERIAL_PROTOCOLLN(0);}
+//	  else{
+//		  SERIAL_PROTOCOLLN(1);}
+//	  SERIAL_PROTOCOLLN(extruder_multiply[0]);
+//	  SERIAL_PROTOCOLLN(extruder_multiply[1]);
     }
     else {
 		if (code_seen('S')) {

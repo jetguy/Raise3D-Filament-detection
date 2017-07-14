@@ -330,6 +330,12 @@ your extruder heater takes 2 minutes to hit the target on heating.
 //============================= Mechanical Settings =========================
 //===========================================================================
 
+//Lack of material testing
+#define ENDSTOPPULLUP_E0_LACK
+#define ENDSTOPPULLUP_E1_LACK
+const bool E0_LACK_ENDSTOP_INVERTING = true; // set to true to invert the logic of the endstop.
+const bool E1_LACK_ENDSTOP_INVERTING = true; // set to true to invert the logic of the endstop.
+
 // Uncomment this option to enable CoreXY kinematics
 // #define COREXY
 
