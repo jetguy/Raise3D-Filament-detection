@@ -2,6 +2,16 @@
 Modified Marlin firmware for Raise3D N Series Printers.  
 
 ##Update History:  
+####v1.1.7:
+* Fixed code in thermal_runaway function
+* Added new gcode F command to control Filament Runout Sensor
+* Fixed bug with pins
+* Fixed compiler issue with fpos_t
+* Updated Lack of Material Function to be controlled by new gcode F command
+
+####v1.1.6-rev2:
+* Added Lack of Material Function
+
 ####v1.1.6-rev1:  
 * Fixed a bug while heated bed was heating, the thermal_runaway function will operate invalid memory location to cause strange behaviour.  
 
