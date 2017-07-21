@@ -4724,7 +4724,7 @@ inline void gcode_F0() {
           SERIAL_ECHO(" SET ON ");        
           lack_materia_sensor_state[0] = true; 
          }
-        else {
+        if (sensor_set >= 2) {
           SERIAL_ECHOLN(MSG_INVALID_SENSOR_STATE);
         }
     }
@@ -4742,9 +4742,9 @@ inline void gcode_F0() {
           SERIAL_ECHO(" SET OPEN ");
           lack_materia_sensor_norm[0]=true;
          }
-        else {
+        if (normally_set >= 2) {
           SERIAL_ECHOLN(MSG_INVALID_SENSOR_NORMAL);
-      }
+        }
     }
   SERIAL_ECHO(" STATE: ");
   if (lack_materia_sensor_state[0] == false) {
@@ -4774,7 +4774,7 @@ inline void gcode_F1() {
       if (sensor_set == 1) {
         lack_materia_sensor_state[1] = true; 
         }
-      else {
+      if (sensor_set >= 2) {
         SERIAL_ECHOLN(MSG_INVALID_SENSOR_STATE);
       }
     }
@@ -4787,7 +4787,7 @@ inline void gcode_F1() {
       if (normally_set == 1) {
         lack_materia_sensor_norm[1]=true;
         }
-      else {
+      if (normally_set >= 2) {
         SERIAL_ECHOLN(MSG_INVALID_SENSOR_NORMAL);
       }
     }
