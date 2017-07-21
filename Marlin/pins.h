@@ -124,9 +124,15 @@
 
 // List of pins which to ignore when asked to change by gcode, 0 and 1 are RX and TX, do not mess with those!
 #define _E0_PINS E0_STEP_PIN, E0_DIR_PIN, E0_ENABLE_PIN, HEATER_0_PIN, analogInputToDigitalPin(TEMP_0_PIN),
-#define _E1_PINS
-#define _E2_PINS
-#define _E3_PINS
+#if EXTRUDERS < 2
+  #define _E1_PINS
+#endif
+#if EXTRUDERS < 3
+  #define _E2_PINS
+#endif
+#if EXTRUDER < 4
+    #define _E3_PINS
+#endif
 
 #if EXTRUDERS > 1
   #define _E1_PINS E1_STEP_PIN, E1_DIR_PIN, E1_ENABLE_PIN, HEATER_1_PIN, analogInputToDigitalPin(TEMP_1_PIN),

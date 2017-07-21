@@ -121,6 +121,11 @@ extern float max_e_jerk;
 extern float mintravelfeedrate;
 extern unsigned long axis_steps_per_sqr_second[NUM_AXIS];
 
+#ifdef RAISE3D_FILAMENT_RUNOUT_SENSOR
+    extern bool lack_materia_sensor_state[2];
+    extern bool lack_materia_sensor_norm[2];
+#endif
+
 #ifdef AUTOTEMP
     extern bool autotemp_enabled;
     extern float autotemp_max;

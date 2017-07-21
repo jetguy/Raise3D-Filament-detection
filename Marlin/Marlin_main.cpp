@@ -3562,6 +3562,24 @@ inline void gcode_M119() {
     SERIAL_PROTOCOLPGM(MSG_Z_MAX);
     SERIAL_PROTOCOLLN(((READ(Z_MAX_PIN)^Z_MAX_ENDSTOP_INVERTING)?MSG_ENDSTOP_HIT:MSG_ENDSTOP_OPEN));
   #endif
+
+  //Lack of material testing
+  #ifdef RRAISE3D_FILAMENT_RUNOUT_SENSOR
+    #ifdef RAISE3D_E0_FILAMENT_SENSOR
+      #if defined(E0_MATERIAL_LACK_PIN) && E0_MATERIAL_LACK_PIN > -1
+        SERIAL_PROTOCOLPGM("e0_lack: ");
+        SERIAL_PROTOCOLLN(((READ(E0_MATERIAL_LACK_PIN)^E0_LACK_ENDSTOP_INVERTING)?MSG_ENDSTOP_HIT:MSG_ENDSTOP_OPEN));
+      #endif
+    #endif
+    #if defined(DUAL)
+      #ifdef RAISE3D_E1_FILAMENT_SENSOR
+        #if defined(E1_MATERIAL_LACK_PIN) && E1_MATERIAL_LACK_PIN > -1
+          SERIAL_PROTOCOLPGM("e1_lack: ");
+          SERIAL_PROTOCOLLN(((READ(E1_MATERIAL_LACK_PIN)^E1_LACK_ENDSTOP_INVERTING)?MSG_ENDSTOP_HIT:MSG_ENDSTOP_OPEN));
+        #endif
+      #endif
+    #endif
+  #endif
 }
 
 /**
@@ -3852,12 +3870,12 @@ inline void gcode_M221() {
 		if (code_seen('S')) {
 			int sval = code_value();
       extruder_multiply[tmp_extruder] = sval;
-	  SERIAL_PROTOCOLLN(sval);
-	  if (tmp_extruder == 0) {SERIAL_PROTOCOLLN(0);}
-	  else{
-		  SERIAL_PROTOCOLLN(1);}
-	  SERIAL_PROTOCOLLN(extruder_multiply[0]);
-	  SERIAL_PROTOCOLLN(extruder_multiply[1]);
+//	  SERIAL_PROTOCOLLN(sval);
+//	  if (tmp_extruder == 0) {SERIAL_PROTOCOLLN(0);}
+//	  else{
+//		  SERIAL_PROTOCOLLN(1);}
+//	  SERIAL_PROTOCOLLN(extruder_multiply[0]);
+//	  SERIAL_PROTOCOLLN(extruder_multiply[1]);
     }
     else {
 		if (code_seen('S')) {
@@ -4681,6 +4699,115 @@ inline void gcode_M999() {
   FlushSerialRequestResend();
 }
 
+/**
+ * F0-F1: Lack Material Sensor Command
+ *
+ *   S0      Turns Sensor off
+ *   S1      Turns Sensor On
+ *   N0     Sets sensor to Normally Open
+ *   N1     Sets Sensor to Normally Close
+ */
+
+inline void gcode_F0() {
+  SERIAL_ECHO_START;
+  SERIAL_ECHO("F0");
+    if (code_seen('S')) {
+      int sensor_set = code_value();
+      SERIAL_ECHO(" SETTING:");
+      SERIAL_ECHO(sensor_set);
+      if (sensor_set == 0) {
+        SERIAL_ECHO(" SET OFF ");
+        lack_materia_sensor_state[0] = false;
+        }
+      else 
+        if (sensor_set == 1) {
+          SERIAL_ECHO(" SET ON ");        
+          lack_materia_sensor_state[0] = true; 
+         }
+        else {
+          SERIAL_ECHOLN(MSG_INVALID_SENSOR_STATE);
+        }
+    }
+
+    if (code_seen('N')) {
+      int normally_set = code_value();
+      SERIAL_ECHO(" SETTING:");
+      SERIAL_ECHO(normally_set);
+      if (normally_set = 0) {
+        SERIAL_ECHO(" SET CLOSED ");
+        lack_materia_sensor_norm[0]=false;
+        }
+      else
+        if (normally_set = 1) {
+          SERIAL_ECHO(" SET OPEN ");
+          lack_materia_sensor_norm[0]=true;
+         }
+        else {
+          SERIAL_ECHOLN(MSG_INVALID_SENSOR_NORMAL);
+      }
+    }
+  SERIAL_ECHO(" STATE: ");
+  if (lack_materia_sensor_state[0] == false) {
+    SERIAL_ECHO(MSG_SENSOR_STATE_OFF);
+  }
+  if (lack_materia_sensor_state[0] == true) {
+    SERIAL_ECHO(MSG_SENSOR_STATE_ON);
+  }
+  SERIAL_ECHO(" NORMAL STATE: ");
+  if (lack_materia_sensor_norm[0] == false) {
+    SERIAL_ECHOLN(MSG_SENSOR_NORMAL_STATE_CLOSED);
+  }
+  if (lack_materia_sensor_norm[0] == true) {
+    SERIAL_ECHOLN(MSG_SENSOR_NORMAL_STATE_OPEN);
+  } 
+}
+
+inline void gcode_F1() {
+  SERIAL_ECHO_START;
+  SERIAL_ECHO("F1");
+    if (code_seen('S')) {
+      SERIAL_ECHO("SETTING STATE ");
+      int sensor_set = code_value();
+      if (sensor_set == 0) {
+        lack_materia_sensor_state[1] = false;
+        }
+      if (sensor_set == 1) {
+        lack_materia_sensor_state[1] = true; 
+        }
+      else {
+        SERIAL_ECHOLN(MSG_INVALID_SENSOR_STATE);
+      }
+    }
+    if (code_seen('N')) {
+      SERIAL_ECHO("SETTING NORMAL ");
+      int normally_set = code_value();
+      if (normally_set == 0) {
+        lack_materia_sensor_norm[1]=false;
+        }
+      if (normally_set == 1) {
+        lack_materia_sensor_norm[1]=true;
+        }
+      else {
+        SERIAL_ECHOLN(MSG_INVALID_SENSOR_NORMAL);
+      }
+    }
+  SERIAL_ECHO(" STATE: ");
+  if (lack_materia_sensor_state[0] == false) {
+    SERIAL_ECHO(MSG_SENSOR_STATE_OFF);
+  }
+  if (lack_materia_sensor_state[0] == true) {
+    SERIAL_ECHO(MSG_SENSOR_STATE_ON);
+  }
+  SERIAL_ECHO(" NORMAL STATE: ");
+  if (lack_materia_sensor_norm[0] == false) {
+    SERIAL_ECHOLN(MSG_SENSOR_NORMAL_STATE_CLOSED);
+  }
+  if (lack_materia_sensor_norm[0] == true) {
+    SERIAL_ECHOLN(MSG_SENSOR_NORMAL_STATE_OPEN);
+  } 
+}
+
+
 inline void gcode_T() {
   tmp_extruder = code_value();
   if (tmp_extruder >= EXTRUDERS) {
@@ -5245,7 +5372,18 @@ void process_commands() {
         break;
     }
   }
-
+  else if (code_seen('F')) {
+    switch (code_value_long()) {
+       
+      case 0:
+        gcode_F0();
+        break;
+        
+      case 1:
+        gcode_F1();
+        break;
+    }
+  }
   else if (code_seen('T')) {
     gcode_T();
   }

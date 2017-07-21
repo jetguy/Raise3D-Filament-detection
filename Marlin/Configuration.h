@@ -1,3 +1,5 @@
+#include <U8glib.h>
+
 #ifndef CONFIGURATION_H
 #define CONFIGURATION_H
 
@@ -38,7 +40,7 @@ Here are some standard links for getting your machine calibrated:
 // User-specified version info of this build to display in [Pronterface, etc] terminal window during
 // startup. Implementation of an idea by Prof Braino to inform user that any changes made to this
 // build by the user have been successfully uploaded into firmware.
-#define STRING_VERSION "1.1.6-rev1"
+#define STRING_VERSION "1.1.7"
 #define STRING_URL "reprap.org"
 #define STRING_VERSION_CONFIG_H __DATE__ " " __TIME__ // build date and time
 #define STRING_CONFIG_H_AUTHOR "(none, default config)" // Who made the changes.
@@ -55,8 +57,8 @@ Here are some standard links for getting your machine calibrated:
 #define N_SERIES_PROTOCLE
 #define N2PLUS
 
-//#define DUAL  //Comment this line to get single head version firmware.
-
+#define DUAL  //Comment this line to get single head version firmware.
+#define RAISE3D_FILAMENT_RUNOUT_SENSOR //Uncomment this line to enable raise3d filament runout sensor
 
 // This determines the communication speed of the printer
 #define BAUDRATE 230400
@@ -66,9 +68,8 @@ Here are some standard links for getting your machine calibrated:
 
 // The following define selects which electronics board you have.
 // Please choose the name from boards.h that matches your setup
-#ifndef MOTHERBOARD
-  #define MOTHERBOARD BOARD_RUMBA
-#endif
+#define MOTHERBOARD BOARD_RUMBA
+
 
 // Define this to set a custom name for your generic Mendel,
 // #define CUSTOM_MENDEL_NAME "This Mendel"
@@ -330,6 +331,15 @@ your extruder heater takes 2 minutes to hit the target on heating.
 //============================= Mechanical Settings =========================
 //===========================================================================
 
+//Lack of material testing
+#ifdef RAISE3D_FILAMENT_RUNOUT_SENSOR
+  //#define RAISE3D_E0_FILAMENT_SENSOR // Commenting this only controls if sensor is active at start
+  //#define RAISE3D_E1_FILAMENT_SENSOR // Commenting This only controls if sensor is active at start
+  #define ENDSTOPPULLUP_E0_LACK
+  #define ENDSTOPPULLUP_E1_LACK
+  const bool E0_LACK_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
+  const bool E1_LACK_ENDSTOP_INVERTING = false; // set to true to invert the logic of the endstop.
+#endif
 // Uncomment this option to enable CoreXY kinematics
 // #define COREXY
 
@@ -563,7 +573,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // #define EXTRUDER_OFFSET_Y {0.0, 5.00}  // (in mm) for each extruder, offset of the hotend on the Y axis
 
 // The speed change that does not require acceleration (i.e. the software might assume it can be done instantaneously)
-#define DEFAULT_XYJERK                12.0    // (mm/sec)
+#define DEFAULT_XYJERK                10.0    // (mm/sec)
 #define DEFAULT_ZJERK                 0.4     // (mm/sec)
 #define DEFAULT_EJERK                 5.0    // (mm/sec)
 
@@ -650,7 +660,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // http://reprap.org/wiki/RepRapDiscount_Full_Graphic_Smart_Controller
 //
 // ==> REMEMBER TO INSTALL U8glib to your ARDUINO library folder: http://code.google.com/p/u8glib/wiki/u8glib
-#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+//#define REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
 
 // The RepRapWorld REPRAPWORLD_KEYPAD v1.1
 // http://reprapworld.com/?products_details&products_id=202&cPath=1591_1626

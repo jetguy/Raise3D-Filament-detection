@@ -90,6 +90,11 @@ long position[NUM_AXIS];   //rescaled from extern when axis_steps_per_unit are c
 static float previous_speed[NUM_AXIS]; // Speed of previous path line segment
 static float previous_nominal_speed; // Nominal speed of previous path line segment
 
+#ifdef RAISE3D_FILAMENT_RUNOUT_SENSOR
+  bool lack_materia_sensor_state[];
+  bool lack_materia_sensor_norm[];
+#endif
+
 #ifdef AUTOTEMP
 float autotemp_max=250;
 float autotemp_min=210;
@@ -607,7 +612,7 @@ block->steps_y = labs((target[X_AXIS]-position[X_AXIS]) - (target[Y_AXIS]-positi
 //   SERIAL_PROTOCOLLN(block->steps_e);
   block->steps_e *= extruder_multiply[extruder];
   block->steps_e = round(block->steps_e/100.0);
-  SERIAL_PROTOCOLLN(block->steps_e);
+  //SERIAL_PROTOCOLLN(block->steps_e);
   block->step_event_count = max(block->steps_x, max(block->steps_y, max(block->steps_z, block->steps_e)));
 
   // Bail if this is a zero-length block

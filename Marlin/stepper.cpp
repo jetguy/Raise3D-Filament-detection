@@ -221,7 +221,8 @@ void endstops_hit_on_purpose() {
   endstop_x_hit = endstop_y_hit = endstop_z_hit = false;
 }
 
-void checkHitEndstops() {
+void checkHitEndstops() { 
+
   if (endstop_x_hit || endstop_y_hit || endstop_z_hit) {
     SERIAL_ECHO_START;
     SERIAL_ECHOPGM(MSG_ENDSTOPS_HIT);
@@ -254,6 +255,47 @@ void checkHitEndstops() {
       }
     #endif
   }
+  //Start Lack of Materia
+  #ifdef RAISE3D_FILAMENT_RUNOUT_SENSOR
+    static bool lack_checked_e0=0;       //raise3d lack of materia
+    static bool lack_checked_e1=0;       //raise3d lack of materia
+    static unsigned int lack_check=0;    //raise3d times
+    lack_check++;
+    if(lack_check>=10){
+      lack_check=0;
+      //Lack of material testing
+      if (lack_materia_sensor_state[0] == true) {
+        #if defined(E0_MATERIAL_LACK_PIN) && E0_MATERIAL_LACK_PIN > -1
+          if(READ(E0_MATERIAL_LACK_PIN)^lack_materia_sensor_norm[0]){
+            if(lack_checked_e0==0){
+              SERIAL_PROTOCOLLN("Custom: Filament Error T0");
+              lack_checked_e0=1;
+            }
+          }
+          else{
+            lack_checked_e0=0;
+          }
+        #endif
+      }
+      if (lack_materia_sensor_state[1] == true) {
+        #if defined(DUAL)
+          #if defined(E1_MATERIAL_LACK_PIN) && E1_MATERIAL_LACK_PIN > -1
+            if(READ(E1_MATERIAL_LACK_PIN)^lack_materia_sensor_norm[1]){
+              if(lack_checked_e1==0){
+                SERIAL_PROTOCOLLN("Custom: Filament Error T1");
+                lack_checked_e1=1;
+              }
+            }
+            else{
+              lack_checked_e1=0;
+            }
+          #endif
+        #endif
+      }
+    }
+  #endif
+  //end Lack of Materia
+  
 }
 
 void enable_endstops(bool check) { check_endstops = check; }
@@ -853,6 +895,21 @@ void st_init() {
     #endif
   #endif
 
+  #if defined(E0_MATERIAL_LACK_PIN) && E0_MATERIAL_LACK_PIN >= 0
+    SET_INPUT(E0_MATERIAL_LACK_PIN);
+    #ifdef ENDSTOPPULLUP_E0_LACK
+      WRITE(E0_MATERIAL_LACK_PIN,HIGH);
+    #endif
+  #endif
+
+  #if defined(E1_MATERIAL_LACK_PIN) && E1_MATERIAL_LACK_PIN >= 0
+    SET_INPUT(E1_MATERIAL_LACK_PIN);
+    #ifdef ENDSTOPPULLUP_E1_LACK
+      WRITE(E1_MATERIAL_LACK_PIN,HIGH);
+    #endif
+  #endif
+
+   
   #define AXIS_INIT(axis, AXIS, PIN) \
     AXIS ##_STEP_INIT; \
     AXIS ##_STEP_WRITE(INVERT_## PIN ##_STEP_PIN); \

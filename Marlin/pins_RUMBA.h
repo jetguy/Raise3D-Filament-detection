@@ -20,13 +20,13 @@
 #define Y_DIR_PIN          47
 #define Y_ENABLE_PIN       55
 #define Y_MIN_PIN          35
-#define Y_MAX_PIN          34
+#define Y_MAX_PIN          -1//34
 
 #define Z_STEP_PIN         57
 #define Z_DIR_PIN          56
 #define Z_ENABLE_PIN       62
 #define Z_MIN_PIN          33
-#define Z_MAX_PIN          32
+#define Z_MAX_PIN          -1//32
 
 #define E0_STEP_PIN        23
 #define E0_DIR_PIN         22
@@ -118,4 +118,7 @@
 #define BTN_ENC            43
 
 #define SERVO0_PIN         5
+
+#define E0_MATERIAL_LACK_PIN    34//34
+#define E1_MATERIAL_LACK_PIN    32//32
 

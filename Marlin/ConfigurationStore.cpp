@@ -127,7 +127,14 @@ void Config_StoreSettings()  {
   EEPROM_WRITE_VAR(i, max_z_jerk);
   EEPROM_WRITE_VAR(i, max_e_jerk);
   EEPROM_WRITE_VAR(i, add_homing);
-
+  
+  #ifdef RAISE3D_FILAMENT_RUNOUT_SENSOR
+    EEPROM_WRITE_VAR(i, lack_materia_sensor_state[0]);
+    EEPROM_WRITE_VAR(i, lack_materia_sensor_state[1]);
+    EEPROM_WRITE_VAR(i, lack_materia_sensor_norm[0]);
+    EEPROM_WRITE_VAR(i, lack_materia_sensor_norm[1]);
+  #endif
+  
   #ifdef DELTA
     EEPROM_WRITE_VAR(i, endstop_adj);               // 3 floats
     EEPROM_WRITE_VAR(i, delta_radius);              // 1 float
@@ -264,6 +271,13 @@ void Config_RetrieveSettings() {
     EEPROM_READ_VAR(i, max_e_jerk);
     EEPROM_READ_VAR(i, add_homing);
 
+    #ifdef RAISE3D_FILAMENT_RUNOUT_SENSOR
+      EEPROM_READ_VAR(i, lack_materia_sensor_state[0]);
+      EEPROM_READ_VAR(i, lack_materia_sensor_state[1]);
+      EEPROM_READ_VAR(i, lack_materia_sensor_norm[0]);
+      EEPROM_READ_VAR(i, lack_materia_sensor_norm[1]);
+    #endif
+    
     #ifdef DELTA
       EEPROM_READ_VAR(i, endstop_adj);                // 3 floats
       EEPROM_READ_VAR(i, delta_radius);               // 1 float
@@ -392,6 +406,21 @@ void Config_ResetDefault() {
   max_e_jerk = DEFAULT_EJERK;
   add_homing[X_AXIS] = add_homing[Y_AXIS] = add_homing[Z_AXIS] = 0;
 
+  #ifdef RAISE3D_FILAMENT_RUNOUT_SENSOR
+    #ifdef RAISE3D_E0_FILAMENT_SENSOR
+      lack_materia_sensor_state[0] = true;
+    #else
+      lack_materia_sensor_state[0] = false;
+    #endif
+    #ifdef RAISE3D_E1_FILAMENT_SENSOR
+      lack_materia_sensor_state[1] = true;
+    #else
+      lack_materia_sensor_state[1] = false;
+    #endif      
+    lack_materia_sensor_norm[0] = E0_LACK_ENDSTOP_INVERTING;
+    lack_materia_sensor_norm[1] = E1_LACK_ENDSTOP_INVERTING;
+  #endif
+  
   #ifdef DELTA
     endstop_adj[X_AXIS] = endstop_adj[Y_AXIS] = endstop_adj[Z_AXIS] = 0;
     delta_radius =  DELTA_RADIUS;
@@ -665,6 +694,12 @@ void Config_PrintSettings(bool forReplay) {
     SERIAL_ECHO(CUSTOM_M_CODE_SET_Z_PROBE_OFFSET);
     SERIAL_ECHOPAIR(" Z", -zprobe_zoffset);
     SERIAL_EOL;
+  #endif
+  #ifdef N_SERIES_PROTOCLE
+    #ifndef REPRAP_DISCOUNT_FULL_GRAPHIC_SMART_CONTROLLER
+      SERIAL_ECHO_START;
+      SERIAL_ECHOLNPGM(MSG_SD_INIT_FAIL);
+    #endif
   #endif
 }
 
