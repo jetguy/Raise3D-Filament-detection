@@ -1,7 +1,11 @@
 # Marlin-Raise3D-N-Series  
 Modified Marlin firmware for Raise3D N Series Printers.  
 
-##Update History:  
+##Update History:
+####v1.1.7J:  
+* Added thermo controlled extruder cooling fan (extruder head breakout output fan 0), retains gcode controlled fan output Fan 1,enabled EEPROM saving of settings in firmware.  
+
+##Update History:
 ####v1.1.6-rev1:  
 * Fixed a bug while heated bed was heating, the thermal_runaway function will operate invalid memory location to cause strange behaviour.  
 
